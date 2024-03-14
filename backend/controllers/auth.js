@@ -17,6 +17,16 @@ export const register = async (req, res) => {
       });
     }
 
+    const userExists = await UserModel.findOne({
+      email: validatedUser.data.email,
+    }).exec();
+
+    if (userExists) {
+      return res.status(400).send({
+        error: "This email is already used!",
+      });
+    }
+
     const { password } = validatedUser.data;
     const hashedPassword = bcrypt.hashSync(password, 10);
 
