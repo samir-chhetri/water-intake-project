@@ -64,7 +64,7 @@ export const login = async (req, res) => {
     const user = await UserModel.findOne({ email: email }).exec();
 
     if (!user) {
-      return res.status(404).send({
+      return res.status(401).send({
         error: "Invalid email or password",
       });
     }
@@ -112,12 +112,15 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    let authToken = req.cookies["auth_token"];
-
+    let authToken = req.headers["Authorization"];
     if (!authToken) {
       return res.status(401).send({
         error: "User is not logged in",
       });
+    }
+
+    if (authToken) {
+      authToken = authToken.split(" ")[1];
     }
 
     const decoded = jwt.verify(authToken, JWT_SECRET);
