@@ -1,6 +1,6 @@
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../hooks/useAuth";
 
 const NavItem = ({ icon, href, title, active, isButton = false, onClick }) => {
   if (isButton) {
@@ -31,8 +31,6 @@ export function Sidebar() {
     return <Navigate to="/login" replace />;
   }
 
-  const { accessToken } = user;
-
   const logout = async () => {
     try {
       const res = await axios.post(
@@ -40,7 +38,7 @@ export function Sidebar() {
         {},
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${user?.accessToken}`,
           },
           withCredentials: true,
         }

@@ -4,7 +4,7 @@ export default function GoalCard({
   volume,
   onAddVolume,
   onDecreaseVolume,
-  setIntakeGoal,
+  submitIntakeGoal,
 }) {
   return (
     <div className="card goal-card">
@@ -24,7 +24,7 @@ export default function GoalCard({
 
       <p>Set your daily hydration goals</p>
 
-      <button className="button" onClick={setIntakeGoal}>
+      <button className="button" onClick={submitIntakeGoal}>
         Set
       </button>
     </div>

@@ -42,6 +42,11 @@ export const createIntakeGoal = async (req, res) => {
     if (existingIntake) {
       existingIntake.intakeGoal = intakeGoal;
       await existingIntake.save();
+
+      return res.status(200).json({
+        message: "Intake goal updated successfully",
+        intake: existingIntake,
+      });
     }
 
     const newIntake = new IntakeModel({
@@ -82,7 +87,9 @@ export const addIntake = async (req, res) => {
       return res.status(404).json({ error: "Intake goal not set for today" });
     }
 
-    existingIntake.waterIntake += intakeAmount;
+    const intakeAmountInLitres = intakeAmount / 1000;
+
+    existingIntake.waterIntake += intakeAmountInLitres;
 
     if (existingIntake.waterIntake >= existingIntake.intakeGoal) {
       existingIntake.completed = true;

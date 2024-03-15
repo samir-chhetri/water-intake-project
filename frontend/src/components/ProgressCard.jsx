@@ -12,6 +12,7 @@ export default function ProgressCard({
       <div className="progress-report">
         <div className="progress-bar">
           <CircularProgressbar
+            maxValue={100}
             value={progressPercentage}
             text={`${progressPercentage}%`}
             strokeWidth={12}
@@ -23,7 +24,7 @@ export default function ProgressCard({
           />
         </div>
 
-        <p>{remainingIntake} liters to go</p>
+        <p>{remainingIntake.toFixed(2)} liters to go</p>
       </div>
 
       <div className="ruler"></div>

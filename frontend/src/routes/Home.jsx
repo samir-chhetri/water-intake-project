@@ -3,26 +3,69 @@ import "react-circular-progressbar/dist/styles.css";
 import GoalCard from "../components/GoalCard";
 import TimerCard from "../components/TimerCard";
 import ProgressCard from "../components/ProgressCard";
+import { useAuth } from "../hooks/useAuth";
+import axios from "axios";
 
 export default function Home() {
+  const { user } = useAuth();
+  const accessToken = user?.accessToken;
+
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
 
-  const [volume, setVolume] = useState(1);
-  const onAddVolume = () => setVolume((volume) => volume + 1);
-  const onDecreaseVolume = () => setVolume((volume) => volume - 1);
+  const handleTimerStart = () => {
+    setIsActive(true);
+  };
+
+  const handleTimerStop = () => {
+    setIsActive(false);
+  };
+
+  const [intakeGoal, setIntakeGoal] = useState(1);
+  const onAddVolume = () => setIntakeGoal((volume) => volume + 1);
+  const onDecreaseVolume = () => setIntakeGoal((volume) => volume - 1);
 
   const [progressPercentage, setProgressPercentage] = useState(0);
   const [customIntakeValue, setCustomIntakeValue] = useState(0);
 
-  const remainingIntake = 0.5;
+  const [remainingIntake, setRemainingIntake] = useState(1);
 
-  const onAddIntake = (value) => {
-    if (value > 0) {
-      // todo
-      console.log("added intake", value);
+  const onAddIntake = async (value) => {
+    if (parseInt(value) > 0) {
+      try {
+        const res = await axios.patch(
+          "/api/intake/add",
+          { intakeAmount: parseInt(value) },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+            withCredentials: true,
+          }
+        );
+
+        const { intake } = res.data;
+
+        const percentage = (intake.waterIntake / intake.intakeGoal) * 100;
+        if (percentage > 100) {
+          setProgressPercentage(100);
+        } else {
+          setProgressPercentage(percentage);
+        }
+
+        const remainingIntake = intake.intakeGoal - intake.waterIntake;
+        if (remainingIntake < 0) {
+          setRemainingIntake(0);
+        } else {
+          setRemainingIntake(remainingIntake);
+        }
+
+        setCustomIntakeValue(0);
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -57,17 +100,25 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [isActive, hours, minutes, seconds]);
 
-  const handleTimerStart = () => {
-    setIsActive(true);
-  };
+  const submitIntakeGoal = async () => {
+    try {
+      const response = await axios.post(
+        "/api/intake/goal",
+        {
+          intakeGoal,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          withCredentials: true,
+        }
+      );
 
-  const handleTimerStop = () => {
-    setIsActive(false);
-  };
-
-  const setIntakeGoal = () => {
-    // todo
-    console.log("this is your goal", volume);
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const remindToDrink = () => {
@@ -93,15 +144,51 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("/api/intake", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          withCredentials: true,
+        });
+
+        const { intakeGoal, waterIntake } = res.data;
+
+        setIntakeGoal(intakeGoal);
+
+        const percentage = (waterIntake / intakeGoal) * 100;
+        if (percentage > 100) {
+          setProgressPercentage(100);
+        } else {
+          setProgressPercentage(percentage);
+        }
+
+        const remainingIntake = intakeGoal - waterIntake;
+        if (remainingIntake < 0) {
+          setRemainingIntake(0);
+        } else {
+          setRemainingIntake(remainingIntake);
+        }
+
+        console.log(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <main className="page">
       <div className="wrapper">
         <div className="upper-section">
           <GoalCard
-            volume={volume}
+            volume={intakeGoal}
             onAddVolume={onAddVolume}
             onDecreaseVolume={onDecreaseVolume}
-            setIntakeGoal={setIntakeGoal}
+            submitIntakeGoal={submitIntakeGoal}
           />
 
           <TimerCard
