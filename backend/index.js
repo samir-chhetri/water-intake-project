@@ -1,5 +1,6 @@
 import express from "express";
 import authRouter from "./routes/auth.js";
+import intakeRouter from "./routes/intake.js";
 import mongoose from "mongoose";
 import "dotenv/config";
 import cookieParser from "cookie-parser";
@@ -33,6 +34,7 @@ mongoose
 
 // routes
 app.use("/auth", authRouter);
+app.use("/intake", intakeRouter);
 
 app.listen(PORT, () => {
   console.log(`the server is running at port ${PORT}`);

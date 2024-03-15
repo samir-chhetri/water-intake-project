@@ -1,15 +1,16 @@
-import { UserModel, validateUser } from "../models/user.js";
+import { UserModel } from "../models/user.js";
 import bcrypt from "bcryptjs";
 import { LoginSchema, RegisterSchema } from "../schemas/index.js";
 import "dotenv/config";
 import jwt from "jsonwebtoken";
+import { validateData } from "../utils/validator.js";
 const { JsonWebTokenError } = jwt;
 
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
 
 export const register = async (req, res) => {
   try {
-    const validatedUser = validateUser(RegisterSchema, req.body);
+    const validatedUser = validateData(RegisterSchema, req.body);
 
     if (!validatedUser.success) {
       return res.status(400).send({
@@ -51,7 +52,7 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const validatedUser = validateUser(LoginSchema, req.body);
+    const validatedUser = validateData(LoginSchema, req.body);
 
     if (!validatedUser.success) {
       return res.status(400).send({
@@ -143,13 +144,9 @@ export const logout = async (req, res) => {
 
     await user.save();
 
-    res
-      .clearCookie("auth_token", {
-        samesite: "none",
-      })
-      .send({
-        message: "User logged out successfully",
-      });
+    res.send({
+      message: "User logged out successfully",
+    });
   } catch (error) {
     console.error(error);
 

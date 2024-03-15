@@ -27,9 +27,4 @@ const userSchema = new Schema({
   createdAt: Date,
 });
 
-export const validateUser = (schema, user) => {
-  const validatedUser = schema.safeParse(user);
-  return validatedUser;
-};
-
 export const UserModel = mongoose.model("User", userSchema);
