@@ -1,7 +1,7 @@
 import axios from "axios";
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function Login() {
   let navigate = useNavigate();
@@ -12,7 +12,7 @@ export default function Login() {
   });
   const [error, setError] = useState("");
 
-  const { loginUser } = useContext(AuthContext);
+  const { loginUser } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;

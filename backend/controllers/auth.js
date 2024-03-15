@@ -112,7 +112,7 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    let authToken = req.headers["Authorization"];
+    let authToken = req.headers["authorization"];
     if (!authToken) {
       return res.status(401).send({
         error: "User is not logged in",

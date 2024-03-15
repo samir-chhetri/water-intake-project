@@ -9,7 +9,6 @@ import Login from "./routes/Login.jsx";
 import Register from "./routes/Register.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import ProtectedAuthRoute from "./routes/ProtectedAuthRoute.jsx";
-import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 
 const router = createBrowserRouter([
   {
@@ -18,11 +17,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: (
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        ),
+        element: <Home />,
       },
     ],
   },
