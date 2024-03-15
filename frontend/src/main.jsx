@@ -8,6 +8,8 @@ import Home from "./routes/Home.jsx";
 import Login from "./routes/Login.jsx";
 import Register from "./routes/Register.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
+import ProtectedAuthRoute from "./routes/ProtectedAuthRoute.jsx";
+import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 
 const router = createBrowserRouter([
   {
@@ -16,17 +18,29 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: (
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
   {
     path: "/login",
-    element: <Login />,
+    element: (
+      <ProtectedAuthRoute>
+        <Login />,
+      </ProtectedAuthRoute>
+    ),
   },
   {
     path: "/register",
-    element: <Register />,
+    element: (
+      <ProtectedAuthRoute>
+        <Register />
+      </ProtectedAuthRoute>
+    ),
   },
   {
     path: "*",
