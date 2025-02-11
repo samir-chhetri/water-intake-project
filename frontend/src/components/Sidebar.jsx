@@ -68,12 +68,12 @@ export function Sidebar() {
               icon="overview"
               title="Overview"
             />
-            <NavItem
+            {/* <NavItem
               active={pathname}
               href={"/history"}
               icon="history"
               title="History"
-            />
+            /> */}
             <NavItem icon="logout" title="Logout" isButton onClick={logout} />
           </ul>
         </nav>

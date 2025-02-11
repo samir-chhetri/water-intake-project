@@ -49,10 +49,11 @@ export default function Home() {
         const { intake } = res.data;
 
         const percentage = (intake.waterIntake / intake.intakeGoal) * 100;
+
         if (percentage > 100) {
           setProgressPercentage(100);
         } else {
-          setProgressPercentage(percentage);
+          setProgressPercentage(Math.round(percentage * 100) / 100);
         }
 
         const remainingIntake = intake.intakeGoal - intake.waterIntake;
@@ -115,34 +116,51 @@ export default function Home() {
         }
       );
 
-      console.log(response.data);
+      // console.log(response.data);
+
+      const intake = response.data.intake;
+
+      const percentage = (intake.waterIntake / intake.intakeGoal) * 100;
+
+      if (percentage > 100) {
+        setProgressPercentage(100);
+      } else {
+        setProgressPercentage(Math.round(percentage * 100) / 100);
+      }
+
+      const remainingIntake = intake.intakeGoal - intake.waterIntake;
+      if (remainingIntake < 0) {
+        setRemainingIntake(0);
+      } else {
+        setRemainingIntake(remainingIntake);
+      }
     } catch (error) {
       console.error(error);
     }
   };
 
-  const remindToDrink = () => {
-    if (!("Notification" in window)) {
-      // Check if the browser supports notifications
-      alert("This browser does not support desktop notification");
-    } else if (Notification.permission === "granted") {
-      // Check whether notification permissions have already been granted;
-      // if so, create a notification
-      const notification = new Notification("Hi there!", {
-        body: "Don't forget to drink water!",
-      });
-    } else if (Notification.permission !== "denied") {
-      // We need to ask the user for permission
-      Notification.requestPermission().then((permission) => {
-        // If the user accepts, let's create a notification
-        if (permission === "granted") {
-          const notification = new Notification("Hi there!", {
-            body: "Don't forget to drink water!",
-          });
-        }
-      });
-    }
-  };
+  // const remindToDrink = () => {
+  //   if (!("Notification" in window)) {
+  //     // Check if the browser supports notifications
+  //     alert("This browser does not support desktop notification");
+  //   } else if (Notification.permission === "granted") {
+  //     // Check whether notification permissions have already been granted;
+  //     // if so, create a notification
+  //     const notification = new Notification("Hi there!", {
+  //       body: "Don't forget to drink water!",
+  //     });
+  //   } else if (Notification.permission !== "denied") {
+  //     // We need to ask the user for permission
+  //     Notification.requestPermission().then((permission) => {
+  //       // If the user accepts, let's create a notification
+  //       if (permission === "granted") {
+  //         const notification = new Notification("Hi there!", {
+  //           body: "Don't forget to drink water!",
+  //         });
+  //       }
+  //     });
+  //   }
+  // };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -162,7 +180,7 @@ export default function Home() {
         if (percentage > 100) {
           setProgressPercentage(100);
         } else {
-          setProgressPercentage(percentage);
+          setProgressPercentage(Math.round(percentage * 100) / 100);
         }
 
         const remainingIntake = intakeGoal - waterIntake;
@@ -172,7 +190,7 @@ export default function Home() {
           setRemainingIntake(remainingIntake);
         }
 
-        console.log(res.data);
+        // console.log(res.data);
       } catch (error) {
         console.log(error);
       }

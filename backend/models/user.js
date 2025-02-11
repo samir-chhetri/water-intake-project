@@ -24,6 +24,14 @@ const userSchema = new Schema({
   accessToken: {
     type: String,
   },
+  jobType: {
+    type: String,
+    required: true,
+  },
+  age: {
+    type: Number,
+    required: true,
+  },
   createdAt: Date,
 });
 

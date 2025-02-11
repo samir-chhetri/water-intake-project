@@ -14,7 +14,7 @@ export const register = async (req, res) => {
 
     if (!validatedUser.success) {
       return res.status(400).send({
-        error: "Validation failed",
+        error: validatedUser.error.issues[0].message,
       });
     }
 

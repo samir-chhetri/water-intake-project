@@ -78,18 +78,29 @@ export const addIntake = async (req, res) => {
 
     const date = getDateString();
 
-    const existingIntake = await IntakeModel.findOne({
+    let existingIntake = await IntakeModel.findOne({
       userId: user.id,
       date,
     }).exec();
 
     if (!existingIntake) {
-      return res.status(404).json({ error: "Intake goal not set for today" });
+      const defaultIntakeGoal = 1;
+      const newIntake = new IntakeModel({
+        intakeGoal: defaultIntakeGoal,
+        date,
+        userId: user.id,
+      });
+
+      await newIntake.save();
+
+      existingIntake = newIntake;
     }
 
     const intakeAmountInLitres = intakeAmount / 1000;
 
-    existingIntake.waterIntake += intakeAmountInLitres;
+    existingIntake.waterIntake += intakeAmountInLitres; 
+    existingIntake.waterIntake =
+      Math.round(existingIntake.waterIntake * 100) / 100;
 
     if (existingIntake.waterIntake >= existingIntake.intakeGoal) {
       existingIntake.completed = true;

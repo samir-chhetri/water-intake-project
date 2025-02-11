@@ -5,8 +5,10 @@ import axios from "axios";
 export default function Register() {
   const [credentials, setCredentials] = useState({
     username: "",
+    age: "",
     email: "",
     password: "",
+    jobType: "",
   });
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
@@ -23,16 +25,22 @@ export default function Register() {
   };
 
   const onSubmit = async (e) => {
+    console.log(credentials);
     e.preventDefault();
     setSuccess("");
     setError("");
 
     try {
-      const response = await axios.post("/api/auth/register", credentials);
+      const response = await axios.post("/api/auth/register", {
+        ...credentials,
+        age: parseInt(credentials.age),
+      });
 
       setSuccess(response.data.message);
       setCredentials({
         username: "",
+        age: "",
+        jobType: "",
         email: "",
         password: "",
       });
@@ -62,37 +70,64 @@ export default function Register() {
               />
             </div>
             <div className="form-control">
-              <label htmlFor="email">Email</label>
+              <label htmlFor="age">Age</label>
               <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="test@gmail.com"
-                value={credentials.email}
+                type="number"
+                id="age"
+                name="age"
+                placeholder=""
+                value={credentials.age}
                 onChange={handleChange}
                 required
               />
             </div>
             <div className="form-control">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="jobType">Job Type</label>
               <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="******"
-                value={credentials.password}
+                type="text"
+                id="jobType"
+                name="jobType"
+                placeholder="field worker"
+                value={credentials.jobType}
                 onChange={handleChange}
                 required
               />
-            </div>
-            {success.length !== 0 && (
-              <div className="message success">{success}</div>
-            )}
 
-            {error.length !== 0 && <div className="message error">{error}</div>}
-            <button type="submit" className="submit-button">
-              Register
-            </button>
+              <div className="form-control">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="test@gmail.com"
+                  value={credentials.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-control">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="******"
+                  value={credentials.password}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              {success.length !== 0 && (
+                <div className="message success">{success}</div>
+              )}
+
+              {error.length !== 0 && (
+                <div className="message error">{error}</div>
+              )}
+              <button type="submit" className="submit-button">
+                Register
+              </button>
+            </div>
           </div>
         </form>
 
